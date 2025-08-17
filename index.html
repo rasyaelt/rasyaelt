@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>TikTok Downloader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 400px;
+    }
+    h1 {
+      color: #111;
+      margin-bottom: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      background: #25f4ee;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+    }
+    button:hover {
+      background: #20c6bb;
+    }
+    #result {
+      margin-top: 20px;
+    }
+    video {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    a {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 15px;
+      background: #111;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>TikTok Downloader</h1>
+    <input type="url" id="tiktokUrl" placeholder="Tempel link TikTok di sini" required>
+    <button onclick="downloadVideo()">Download</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function downloadVideo() {
+      const url = document.getElementById("tiktokUrl").value.trim();
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "Sedang mengambil video...";
+
+      if (!url) {
+        resultDiv.innerHTML = "Masukkan URL TikTok!";
+        return;
+      }
+
+      try {
+        // Contoh pakai API gratis (ganti dengan backend/server sendiri biar aman)
+        const api = `https://api.tiklydown.me/api/download?url=${encodeURIComponent(url)}`;
+        const response = await fetch(api);
+        const data = await response.json();
+
+        if (!data.video || !data.video.noWatermark) {
+          resultDiv.innerHTML = "Gagal mengambil video.";
+          return;
+        }
+
+        const videoUrl = data.video.noWatermark;
+        resultDiv.innerHTML = `
+          <video controls src="${videoUrl}"></video>
+          <br>
+          <a href="${videoUrl}" download="tiktok.mp4">⬇️ Simpan Video</a>
+        `;
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerHTML = "Terjadi error.";
+      }
+    }
+  </script>
+</body>
+</html>
